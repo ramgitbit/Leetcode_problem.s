@@ -1,0 +1,213 @@
+# 69. Sqrt(x)
+
+**LeetCode:** [Sqrt(x)](https://leetcode.com/problems/sqrtx/)  
+**Difficulty:** Easy  
+**Language:** C++
+
+## Problem
+
+Given a non-negative integer `x`, return the **integer square root** of `x`.
+
+The answer should be the largest integer `n` such that:
+
+```text
+n × n <= x
+```
+
+Do not use built-in square root functions.
+
+### Examples
+
+```text
+Input:  x = 4
+Output: 2
+```
+
+```text
+Input:  x = 8
+Output: 2
+```
+
+Because:
+
+```text
+2 × 2 = 4
+3 × 3 = 9 > 8
+```
+
+So the answer is `2`.
+
+## Approach
+
+I used **Binary Search**.
+
+- Search for the square root between `1` and `x`.
+- Find the middle value.
+- If `mid * mid == x`, return `mid`.
+- If `mid * mid < x`, move to the right.
+- If `mid * mid > x`, move to the left.
+- Store the possible answer in `ans`.
+
+To avoid integer overflow, instead of:
+
+```cpp
+mid * mid
+```
+
+I use:
+
+```cpp
+mid <= x / mid
+```
+
+## C++ Solution
+
+```cpp
+class Solution {
+public:
+    int mySqrt(int x) {
+
+        if(x < 2)
+            return x;
+
+        int first = 1;
+        int last = x;
+        int ans = 1;
+
+        while(first <= last) {
+
+            int mid = first + (last - first) / 2;
+
+            // Check if mid * mid <= x
+            if(mid <= x / mid) {
+                ans = mid;
+                first = mid + 1;
+            }
+            else {
+                last = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+## Dry Run
+
+For:
+
+```text
+x = 8
+```
+
+Initially:
+
+```text
+first = 1
+last = 8
+ans = 1
+```
+
+### Step 1
+
+```text
+mid = 4
+
+4 <= 8 / 4
+4 <= 2  ❌
+```
+
+So `4` is too large:
+
+```text
+last = 3
+```
+
+### Step 2
+
+```text
+mid = 2
+
+2 <= 8 / 2
+2 <= 4  ✅
+```
+
+So:
+
+```text
+ans = 2
+first = 3
+```
+
+### Step 3
+
+```text
+mid = 3
+
+3 <= 8 / 3
+3 <= 2  ❌
+```
+
+So:
+
+```text
+last = 2
+```
+
+Now:
+
+```text
+first > last
+```
+
+Loop ends.
+
+```text
+Answer = 2
+```
+
+## Why `mid <= x / mid`?
+
+Instead of:
+
+```cpp
+mid * mid <= x
+```
+
+we use:
+
+```cpp
+mid <= x / mid
+```
+
+This avoids multiplication overflow for large values of `x`.
+
+For example:
+
+```text
+mid * mid <= x
+```
+
+is mathematically equivalent to:
+
+```text
+mid <= x / mid
+```
+
+when `mid` is positive.
+
+## Complexity
+
+- **Time:** `O(log x)`
+- **Space:** `O(1)`
+
+## Key Learning
+
+- Binary Search
+- Finding square root without built-in functions
+- Avoiding integer overflow
+- Using `first`, `last`, and `mid`
+- Storing the best possible answer
+
+**LeetCode Journey 🚀 | Problem #69**
